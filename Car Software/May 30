@@ -57,14 +57,13 @@ void loop() {
   int rightMotorSpeed = motorSpeed + turnSpeed;
 
   //when is less than 0, sets to 0 so motors don't turn
-  //abs makes ""MotorSpeed positive?
+  //abs makes ""MotorSpeed positive regardless
 
   leftMotorSpeed = constrain(abs(leftMotorSpeed), 0, 175);
   rightMotorSpeed = constrain(abs(rightMotorSpeed), 0, 175);
 
   //Serial.println(rightMotorSpeed);
   //Serial.println(motorSpeed);
-
   //Serial.println(leftJoystickYPosition);
 
   if (leftJoystickYPosition < -10) { //backwards
