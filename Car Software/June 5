@@ -146,22 +146,8 @@ void moveHand() {
   PS2.UpdateData();
 
   unsigned long currentTime = millis();
-}
-
-void moveArm() {
-  PS2.SetJoystick(RIGHT_JOYSTICK);
-
-  PS2.UpdateData();
-
-  unsigned long currentTime = millis();
 
   int crossButton = PS2.readButton(PS2_CROSS);
-  int circleButton = PS2.readButton(PS2_CIRCLE);
-
-  int wristUp = PS2.readButton(PS2_RIGHT_1); 
-  int wristDown = PS2.readButton(PS2_RIGHT_2);
-  int elbowUp = PS2.readButton(PS2_LEFT_1);
-  int elbowDown = PS2.readButton(PS2_LEFT_2);
 
   // Toggle hand position
   if (crossButton == HIGH && currentTime > (lastChange + 250)) {
@@ -178,6 +164,13 @@ void moveArm() {
 
     lastChange = currentTime;
   }
+}
+
+void moveWrist() {
+  PS2.UpdateData();
+
+  int wristUp = PS2.readButton(PS2_RIGHT_1); 
+  int wristDown = PS2.readButton(PS2_RIGHT_2);
 
   // Move Wrist
   if (wristUp == HIGH && wristPosition >= 760) {
@@ -191,6 +184,14 @@ void moveArm() {
 
   wrist.write(wristPosition);
 
+}
+
+void moveElbow() {
+  PS2.UpdateData();
+
+  int elbowUp = PS2.readButton(PS2_LEFT_1);
+  int elbowDown = PS2.readButton(PS2_LEFT_2);
+
   // Move Elbow
   if (elbowUp == HIGH && elbowPosition >= 760) {
     elbowPosition -= 10;
@@ -202,6 +203,13 @@ void moveArm() {
   }
 
   elbow.write(elbowPosition);
+  
+}
+
+void moveShoulder() {
+  PS2.SetJoystick(RIGHT_JOYSTICK);
+
+  PS2.UpdateData();
 
   // Move Shoulder 
   int xAxisRight = PS2.GetX_Axis_Raw();
@@ -218,6 +226,12 @@ void moveArm() {
 
   shoulder.write(shoulderPosition);
   //Serial.println(shoulderPosition);
+}
+
+void homeArm() {
+  PS2.UpdateData();
+
+  int circleButton = PS2.readButton(PS2_CIRCLE);
 
   // Revert to home position
   if (circleButton == HIGH) {
@@ -234,11 +248,14 @@ void moveArm() {
     shoulder.write(shoulderPosition);
 
   }
-
 }
 
 void loop() {
   drive();
 
-  moveArm();
+  moveHand();
+  moveWrist();
+  moveElbow();
+  moveShoulder();
+  homeArm();
 }
